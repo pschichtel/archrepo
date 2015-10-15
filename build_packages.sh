@@ -51,6 +51,7 @@ build() {
     local package="$1"
 
     local aur_base="https://aur.archlinux.org"
+    # Find the snapshot URL on the package page. This is necessary due to packages that actually build multiple *.pkg's
     local snapshot_path="$(wget -q -O- "${aur_base}/packages/${package}/" | grep -oP '/cgit/aur.git/snapshot/[^"]+')"
     local url="${aur_base}${snapshot_path}"
     if ! wget -q "${url}"
@@ -59,9 +60,11 @@ build() {
         return 1
     fi
 
+    # Same here, find the single existing package and unzip it
     local package_file="$(ls -1)"
     tar xf "${package_file}" || return 2
 
+    # And again, find the only folder that patches the package file
     local package_dir="$(ls -1 | grep -v "${package_file}")"
 
     # actually build the package
