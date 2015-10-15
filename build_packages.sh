@@ -85,8 +85,13 @@ build() {
                  --sign \
                  --key ${key_id} \
                  --remove \
-                 --files \
                  "${repo}/cubyte.db.tar.gz" ${repo}/*.pkg.tar.xz
+        repo-add --new \
+                 --sign \
+                 --key ${key_id} \
+                 --remove \
+                 --files \
+                 "${repo}/cubyte.files.tar.gz" ${repo}/*.pkg.tar.xz
         popd
         sudo pacman -Sy
     fi
