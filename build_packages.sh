@@ -82,15 +82,15 @@ build() {
         # Update repo index
         pushd "${repo}"
         repo-add --new \
-                 --sign \
-                 --key ${key_id} \
+                 --sign --key ${key_id} \
                  --remove \
+                 --verify \
                  "${repo}/cubyte.db.tar.gz" ${repo}/*.pkg.tar.xz
         repo-add --new \
-                 --sign \
-                 --key ${key_id} \
+                 --sign --key ${key_id} \
                  --remove \
                  --files \
+                 --verify \
                  "${repo}/cubyte.files.tar.gz" ${repo}/*.pkg.tar.xz
         popd
         sudo pacman -Sy
