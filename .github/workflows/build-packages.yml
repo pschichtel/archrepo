@@ -11,17 +11,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ghcr.io/pschichtel/makepkg:v12
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Build k0sctl package
         run: |
-          yay -S --noconfirm k0sctl
+          mkdir -o packages
+          docker run --rm -it -v "$PWD/packages:/packages" yay -S --noconfirm k0sctl
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: k0sctl-package
-          path: /packages/*.tar.zst
+          path: ./packages
