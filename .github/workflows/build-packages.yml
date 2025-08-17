@@ -57,6 +57,7 @@ jobs:
 
       - name: Create repository
         run: |
+          find ./repo-packages
           repo_dir="$PWD/repo-packages"
-          podman run --userns="keep-id:uid=1000" --rm --pull always -v "$repo_dir:/repo-packages" ghcr.io/pschichtel/makepkg:v12 repo-add /repo-packages/custom.db.tar.gz /repo-packages/*.pkg.tar.zst
+          podman run --userns="keep-id:uid=1000" --rm --pull always -v "$repo_dir:/repo-packages" ghcr.io/pschichtel/makepkg:v12 repo-add /repo-packages/pschichtel.db.tar.gz /repo-packages/*.pkg.tar.zst
 
