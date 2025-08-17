@@ -17,7 +17,7 @@ jobs:
 
       - name: Build k0sctl package
         run: |
-          mkdir -o packages
+          mkdir -p packages
           docker run --rm -it -v "$PWD/packages:/packages" yay -S --noconfirm k0sctl
 
       - name: Upload artifact
