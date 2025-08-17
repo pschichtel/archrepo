@@ -94,3 +94,36 @@ jobs:
           name: repository
           path: ./repo-packages
 
+  release:
+    runs-on: ubuntu-latest
+    needs: create-repo
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: 'true'
+          path: ./repo-packages
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: packages
+          release_name: Package Release
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./repo-packages/*.tar.zstd
+          asset_name: ${{ matrix.name }}.tar.zstd
+          asset_content_type: application/zstd
+
