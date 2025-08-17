@@ -1,0 +1,27 @@
+name: Build k0sctl AUR Package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/pschichtel/makepkg:v12
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build k0sctl package
+        run: |
+          yay -S --noconfirm k0sctl
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: k0sctl-package
+          path: /packages/*.tar.zst
