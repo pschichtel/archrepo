@@ -20,7 +20,7 @@ jobs:
           output_dir="$PWD/packages"
           mkdir -p "$output_dir"
           chmod +w "$output_dir"
-          docker run --rm --pull always -v "$output_dir:/packages" ghcr.io/pschichtel/makepkg:v12 yay -S --noconfirm k0sctl
+          podman run --rm --pull always -v "$output_dir:/packages" ghcr.io/pschichtel/makepkg:v12 yay -S --noconfirm k0sctl
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
