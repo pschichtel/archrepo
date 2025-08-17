@@ -22,21 +22,23 @@ jobs:
        run: |
          which yq
          yq --help
-         echo "matrix=$(jq -c . < ./packages.json)" >> $GITHUB_OUTPUT
+         echo "matrix=$(yq eval -o json '.' packages.yaml | jq -cM '.include = (.packages | map({name: .})) | del(.packages)')" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
     needs: configure
+    strategy:
+      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build package
+      - name: Build package ${{ matrix.name }}
         run: |
           output_dir="$PWD/packages"
           mkdir -p "$output_dir"
           chmod +w "$output_dir"
-          podman run --userns="keep-id:uid=1000" --rm --pull always -v "$output_dir:/packages" ghcr.io/pschichtel/makepkg:v12 yay -S --noconfirm k0sctl
+          podman run --userns="keep-id:uid=1000" --rm --pull always -v "$output_dir:/packages" ghcr.io/pschichtel/makepkg:v12 yay -S --noconfirm "${{ matrix.name }}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
