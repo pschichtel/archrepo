@@ -15,13 +15,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build k0sctl package
+      - name: Build package
         run: |
           mkdir -p packages
+          chmod +w packages
           docker run --rm --pull always -v "$PWD/packages:/packages" ghcr.io/pschichtel/makepkg:v12 yay -S --noconfirm k0sctl
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: k0sctl-package
+          name: packages
           path: ./packages
