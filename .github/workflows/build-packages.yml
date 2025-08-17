@@ -46,3 +46,17 @@ jobs:
           name: package-${{ matrix.name }}
           path: ./packages
 
+  create-repo:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./repo-packages
+
+      - name: Create repository
+        run: |
+          repo_dir="$PWD/repo-packages"
+          podman run --userns="keep-id:uid=1000" --rm --pull always -v "$repo_dir:/repo-packages" ghcr.io/pschichtel/makepkg:v12 repo-add /repo-packages/custom.db.tar.gz /repo-packages/*.pkg.tar.zst
+
