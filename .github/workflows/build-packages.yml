@@ -33,6 +33,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Cache packages
+        uses: actions/cache@v4
+        with:
+          path: ./packages
+          key: ${{ runner.os }}-packages-${{ matrix.name }}
+          restore-keys: |
+            ${{ runner.os }}-packages-
+
       - name: Build package ${{ matrix.name }}
         run: |
           output_dir="$PWD/packages"
@@ -59,7 +67,7 @@ jobs:
         run: |
           find ./repo-packages
           repo_dir="$PWD/repo-packages"
-          podman run --userns="keep-id:uid=1000" --rm --pull always -v "$repo_dir:/repo-packages" ghcr.io/pschichtel/makepkg:v12 repo-add /repo-packages/pschichtel.db.tar.gz /repo-packages/*.pkg.tar.zst
+          podman run --userns="keep-id:uid=1000" --rm --pull always -v "$repo_dir:/repo-packages" ghcr.io/pschichtel/makepkg:v12 sh -c 'repo-add /repo-packages/pschichtel.db.tar.gz /repo-packages/*.pkg.tar.zst'
 
       - name: Upload repository artifact
         uses: actions/upload-artifact@v4
