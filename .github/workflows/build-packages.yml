@@ -107,22 +107,29 @@ jobs:
           merge-multiple: 'true'
           path: ./repo-packages
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
+      - name: Get Release by Tag
+        id: get_release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: releases } = await github.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const release = releases.find(r => r.tag_name === 'packages');
+            if (!release) {
+              throw new Error(`Release with tag 'packages' not found`);
+            }
+            return { upload_url: release.upload_url };
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: packages
-          release_name: Package Release
-          draft: false
-          prerelease: false
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./repo-packages/*.tar.zstd
           asset_name: ${{ matrix.name }}.tar.zstd
           asset_content_type: application/zstd
