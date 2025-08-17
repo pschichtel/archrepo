@@ -83,7 +83,7 @@ jobs:
             -v "$repo_dir:/repo-packages" \
             -e "SIGNING_KEY=$SIGNING_KEY" \
             ghcr.io/pschichtel/makepkg:v12 \
-            /build-repo-sh
+            /build-repo.sh
 
       - name: Upload repository artifact
         uses: actions/upload-artifact@v4
