@@ -1,0 +1,6 @@
+{
+  "packages": [
+    {"name":"k0sctl"},
+    {"name":"yay"}
+  ]
+}
