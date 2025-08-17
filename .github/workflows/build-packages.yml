@@ -21,7 +21,7 @@ jobs:
           yay -S --noconfirm k0sctl
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: k0sctl-package
           path: /packages/*.tar.zst
